@@ -1,6 +1,6 @@
 ## pip freeze>requirements.txt
 asgiref==3.2.7
-Django==3.0.4
+Django==3.0.7
 djangorestframework==3.11.0
 mysqlclient==1.4.6
 Pillow==7.1.1
