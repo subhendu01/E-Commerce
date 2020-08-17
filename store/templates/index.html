@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load cart_filter %}
+{% load custom_filter %}
+<div class="container-fluid mt-3">
+  <div class="row">
+  <link rel="stylesheet" href="../static/styles/cart_style.css">
+
+    <!-- filter -->
+    <div class="col-lg-3 mt-2">
+      <div class="list-group border">
+        <a href="/" class="list-group-item list-group-item-action">All Products</a>
+        {% for category in products.category %}
+        <a href="/?category={{category.id}}" class="list-group-item list-group-item-action">{{category.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <!-- all products -->
+    <div id='products' class="col-lg-9 mx-auto">
+      <div class="row mx-auto">
+        {% for product in products.products %}
+        <div class="card card-block mt-2 mb-3 mx-1" id={{product.id}} style="width: 14rem;">
+          <img src="{{product.image.url}}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="card-title">{{product.name}}</p>
+            <p class="card-text"><b>{{product.price|currency}}</b></p>
+            <!-- <a href="#" class="btn btn-light border">Add To Cart</a> -->
+            <!-- {{product | is_in_cart:request.session.cart}} -->
+
+          </div>
+          <!--footer-->
+          <div class="card-footer p-0">
+            {% if product|is_in_cart:request.session.cart %}
+            <!--for increment and decrement-->
+            <div class="row  no-gutters">
+              <!--for decreasing-->
+              <form action="/#{{product.id}}" method="POST" class="col-2">
+                {% csrf_token %}
+                <input type="text" value="{{product.id}}" hidden name="product">
+                <input type="text" value="True" hidden name="remove">
+                <input type="submit" value=" - " class="btn btn-block btn-secondary">
+              </form>
+              
+              <!--for showing-->
+              <div class="text-center col">{{product|cart_quantity:request.session.cart}} in Cart</div>
+              <!--for increasing-->
+              <form action="/#{{product.id}}" method="POST" class="col-2">
+                {% csrf_token %}
+                <input type="text" value="{{product.id}}" hidden name="product">
+                <input type="submit" value=" + " class="btn btn-block btn-secondary">
+              </form>
+              
+            </div>
+            {% else %}
+            <form action="/#{{product.id}}" method="POST" class="btn-block">
+              {% csrf_token %}
+              <input type="text" value="{{product.id}}" hidden name="product">
+              <input href="#" type='submit' class="float-right btn btn-block btn-primary btn-sm border"
+                value="Add To Cart">
+            </form>
+            {% endif %}
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
